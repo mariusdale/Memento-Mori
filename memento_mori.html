@@ -3,8 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Memento Mori</title>
+    <title>Memento Mori | Life in Weeks</title>
     <style>
+        :root {
+            color-scheme: light;
+            --bg: #0f1115;
+            --surface: #151923;
+            --card: #1c2230;
+            --muted: #8a94a6;
+            --text: #f6f7fb;
+            --accent: #e7b56d;
+            --accent-strong: #f4c77d;
+            --border: #2a3140;
+            --success: #7bd389;
+            --shadow: 0 12px 35px rgba(7, 9, 14, 0.35);
+            --radius-lg: 24px;
+            --radius-md: 16px;
+            --radius-sm: 12px;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -12,444 +29,696 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background-color: #fafafa;
-            color: #333;
-            line-height: 1.6;
+            font-family: "Inter", "SF Pro Text", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background: radial-gradient(circle at top, #1b2030 0%, #0f1115 55%);
+            color: var(--text);
             min-height: 100vh;
+        }
+
+        .page {
             display: flex;
             flex-direction: column;
+            min-height: 100vh;
         }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 2rem;
-            flex: 1;
+        header {
+            padding: 2.5rem clamp(1.5rem, 4vw, 4rem) 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
         }
 
-        .step {
-            display: none;
-            animation: fadeIn 0.6s ease-in-out;
+        .brand {
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
         }
 
-        .step.active {
-            display: block;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Step 1: Birth Date Input */
-        .intro-step {
-            text-align: center;
-            max-width: 500px;
-            margin: 0 auto;
-            padding-top: 10vh;
-        }
-
-        .intro-step h1 {
-            font-size: clamp(2rem, 5vw, 3rem);
-            font-weight: 300;
-            margin-bottom: 1.5rem;
-            color: #1a1a1a;
-        }
-
-        .intro-step p {
-            font-size: 1.1rem;
-            color: #666;
-            margin-bottom: 3rem;
-            max-width: 400px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        .date-input-container {
-            margin-bottom: 3rem;
-        }
-
-        .date-input-container label {
-            display: block;
-            font-size: 0.9rem;
-            color: #666;
-            margin-bottom: 0.5rem;
+        .brand h1 {
+            font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+            letter-spacing: 0.06em;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
         }
 
-        .date-input-container input {
-            width: 100%;
-            max-width: 200px;
-            padding: 1rem;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 1.1rem;
-            text-align: center;
-            background: white;
-            transition: border-color 0.2s ease;
+        .brand p {
+            color: var(--muted);
+            max-width: 460px;
+            font-size: 0.98rem;
         }
 
-        .date-input-container input:focus {
-            outline: none;
-            border-color: #666;
+        .header-actions {
+            display: flex;
+            gap: 0.75rem;
         }
 
-        .continue-btn {
-            background: #333;
-            color: white;
-            border: none;
-            padding: 1rem 2rem;
-            font-size: 1rem;
-            border-radius: 4px;
+        .ghost-button {
+            border: 1px solid var(--border);
+            background: transparent;
+            color: var(--text);
+            padding: 0.7rem 1.2rem;
+            border-radius: 999px;
             cursor: pointer;
-            transition: background-color 0.2s ease;
-            font-family: inherit;
-        }
-
-        .continue-btn:hover {
-            background: #555;
-        }
-
-        .continue-btn:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-        }
-
-        /* Step 2: Visualization */
-        .visualization-step {
-            padding-top: 2rem;
-        }
-
-        .header {
-            text-align: center;
-            margin-bottom: 3rem;
-        }
-
-        .header h1 {
-            font-size: clamp(1.5rem, 4vw, 2rem);
-            font-weight: 300;
-            margin-bottom: 0.5rem;
-            color: #1a1a1a;
-        }
-
-        .header p {
-            color: #666;
             font-size: 0.9rem;
+            transition: border-color 0.2s ease, color 0.2s ease;
         }
 
-        .stats-container {
+        .ghost-button:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        main {
+            flex: 1;
+            padding: 0 clamp(1.5rem, 4vw, 4rem) 4rem;
+            display: flex;
+            flex-direction: column;
+            gap: 2.5rem;
+        }
+
+        .hero {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
             gap: 2rem;
-            margin-bottom: 3rem;
-            max-width: 800px;
-            margin-left: auto;
-            margin-right: auto;
+            align-items: center;
         }
 
-        .stat {
-            text-align: center;
-            padding: 1.5rem;
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        .hero-card {
+            background: linear-gradient(135deg, rgba(231, 181, 109, 0.15), rgba(231, 181, 109, 0.05));
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(231, 181, 109, 0.2);
         }
 
-        .stat-number {
-            font-size: clamp(1.8rem, 4vw, 2.5rem);
-            font-weight: 200;
-            color: #333;
+        .hero-card h2 {
+            font-size: 1.6rem;
             margin-bottom: 0.5rem;
+        }
+
+        .hero-card p {
+            color: var(--muted);
+            line-height: 1.6;
+        }
+
+        .hero-card blockquote {
+            margin-top: 1.5rem;
+            font-style: italic;
+            color: var(--accent-strong);
+        }
+
+        .form-card {
+            background: var(--surface);
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+        }
+
+        .form-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+        }
+
+        .form-grid {
+            display: grid;
+            gap: 1.25rem;
+        }
+
+        label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--muted);
+            margin-bottom: 0.4rem;
+            display: block;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 0.85rem 1rem;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border);
+            background: #0f131c;
+            color: var(--text);
+            font-size: 0.95rem;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(231, 181, 109, 0.2);
+        }
+
+        .primary-button {
+            background: var(--accent);
+            color: #1c160b;
+            font-weight: 600;
+            border: none;
+            padding: 0.9rem 1.4rem;
+            border-radius: 999px;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .primary-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .primary-button:hover:not(:disabled) {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 25px rgba(231, 181, 109, 0.3);
+        }
+
+        .helper-text {
+            color: var(--muted);
+            font-size: 0.85rem;
+        }
+
+        .dashboard {
+            display: none;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .dashboard.active {
+            display: flex;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+        }
+
+        .stat-card {
+            background: var(--card);
+            padding: 1.4rem;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+        }
+
+        .stat-value {
+            font-size: 1.6rem;
+            font-weight: 600;
+            margin-bottom: 0.35rem;
         }
 
         .stat-label {
-            font-size: 0.9rem;
-            color: #666;
+            color: var(--muted);
+            font-size: 0.8rem;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.08em;
         }
 
-        .grid-container {
-            background: white;
-            border-radius: 12px;
-            padding: clamp(1rem, 3vw, 2rem);
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-            margin-bottom: 2rem;
+        .progress-panel {
+            background: var(--surface);
+            padding: 1.8rem;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+        }
+
+        .progress-bar {
+            position: relative;
+            height: 12px;
+            background: #0c0f16;
+            border-radius: 999px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        .progress-bar span {
+            display: block;
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), var(--accent-strong));
+            width: 0;
+            transition: width 0.4s ease;
+        }
+
+        .progress-meta {
+            margin-top: 0.8rem;
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            color: var(--muted);
+        }
+
+        .grid-panel {
+            background: var(--surface);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
         }
 
         .grid-legend {
             display: flex;
-            justify-content: center;
-            gap: 2rem;
-            margin-bottom: 2rem;
-            font-size: 0.85rem;
-            color: #666;
+            gap: 1.2rem;
+            flex-wrap: wrap;
+            font-size: 0.8rem;
+            color: var(--muted);
+            margin-bottom: 1rem;
         }
 
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
+        .legend-swatch {
+            width: 12px;
+            height: 12px;
+            border-radius: 4px;
+            display: inline-block;
+            margin-right: 0.4rem;
         }
 
-        .legend-square {
-            width: 8px;
-            height: 8px;
-            border-radius: 1px;
+        .legend-lived {
+            background: var(--accent);
         }
 
-        .legend-square.lived {
-            background: #333;
+        .legend-remaining {
+            background: #1a2030;
+            border: 1px solid var(--border);
         }
 
-        .legend-square.remaining {
-            background: #e5e5e5;
-            border: 1px solid #ddd;
+        .legend-current {
+            background: var(--success);
         }
 
         .weeks-grid {
             display: grid;
-            grid-template-columns: repeat(52, 1fr);
-            gap: clamp(1px, 0.5vw, 2px);
-            max-width: 100%;
-            margin: 0 auto;
+            grid-template-columns: repeat(52, minmax(8px, 1fr));
+            gap: 3px;
         }
 
-        .week-square {
+        .week {
             aspect-ratio: 1;
-            background: #e5e5e5;
-            border-radius: 1px;
-            transition: all 0.2s ease;
-            border: 1px solid #f0f0f0;
+            background: #1a2030;
+            border-radius: 3px;
+            border: 1px solid #1f2635;
+            transition: transform 0.2s ease;
         }
 
-        .week-square.lived {
-            background: #333;
-            border-color: #333;
+        .week.lived {
+            background: var(--accent);
+            border-color: rgba(231, 181, 109, 0.8);
         }
 
-        .week-square:hover {
-            transform: scale(1.2);
-            z-index: 10;
-            position: relative;
+        .week.current {
+            background: var(--success);
+            border-color: rgba(123, 211, 137, 0.8);
         }
 
-        .back-btn {
-            position: fixed;
-            top: 2rem;
-            left: 2rem;
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: #666;
-            transition: color 0.2s ease;
-            z-index: 100;
+        .week:hover {
+            transform: scale(1.4);
+            z-index: 2;
         }
 
-        .back-btn:hover {
-            color: #333;
+        .insight-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+            gap: 1rem;
         }
 
-        .reflection-text {
-            text-align: center;
-            max-width: 600px;
-            margin: 2rem auto 0;
-            padding: 2rem;
-            color: #666;
-            font-size: 0.95rem;
-            line-height: 1.8;
-            font-style: italic;
+        .insight-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            padding: 1.4rem;
+            border-radius: var(--radius-md);
         }
 
-        /* Mobile optimizations */
-        @media (max-width: 768px) {
-            .container {
-                padding: 1rem;
-            }
+        .insight-card h4 {
+            font-size: 1.05rem;
+            margin-bottom: 0.5rem;
+        }
 
-            .weeks-grid {
-                grid-template-columns: repeat(26, 1fr);
-            }
+        .insight-card p {
+            color: var(--muted);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
 
-            .stats-container {
-                grid-template-columns: 1fr;
-                gap: 1rem;
-            }
+        .footer {
+            padding: 2rem clamp(1.5rem, 4vw, 4rem) 3rem;
+            color: var(--muted);
+            font-size: 0.85rem;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
 
-            .grid-legend {
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.4rem 0.8rem;
+            border-radius: 999px;
+            background: rgba(123, 211, 137, 0.15);
+            color: var(--success);
+            font-size: 0.75rem;
+            border: 1px solid rgba(123, 211, 137, 0.3);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 900px) {
+            header {
                 flex-direction: column;
-                gap: 1rem;
-                text-align: center;
+                align-items: flex-start;
             }
 
-            .back-btn {
-                top: 1rem;
-                left: 1rem;
+            .weeks-grid {
+                grid-template-columns: repeat(26, minmax(8px, 1fr));
             }
         }
 
-        @media (max-width: 480px) {
+        @media (max-width: 600px) {
             .weeks-grid {
-                grid-template-columns: repeat(20, 1fr);
+                grid-template-columns: repeat(20, minmax(8px, 1fr));
+            }
+
+            .hero-card,
+            .form-card,
+            .progress-panel,
+            .grid-panel {
+                padding: 1.4rem;
             }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <!-- Step 1: Birth Date Input -->
-        <div class="step intro-step active" id="step1">
-            <h1>Memento Mori</h1>
-            <p>Each life is a collection of weeks. Let's visualize yours and see the story they tell.</p>
-            <p style="font-size: 0.9rem; color: #999; margin-top: 1rem; font-style: italic;">"You could die today. Let this determine what you do and say and think." — Marcus Aurelius</p>
-            
-            <div class="date-input-container">
-                <label for="birthDate">Your birth date</label>
-                <input type="date" id="birthDate" />
+    <div class="page">
+        <header>
+            <div class="brand">
+                <h1>Memento Mori</h1>
+                <p>A modern reflection tool to map your life in weeks, capture milestones, and keep your focus sharp.</p>
             </div>
-            
-            <button class="continue-btn" id="continueBtn" disabled>Continue</button>
-        </div>
-
-        <!-- Step 2: Visualization -->
-        <div class="step visualization-step" id="step2">
-            <button class="back-btn" id="backBtn">←</button>
-            
-            <div class="header">
-                <h1>Your life in weeks</h1>
-                <p>Each square represents one week of your life, assuming 90 years lifespan</p>
+            <div class="header-actions">
+                <button class="ghost-button" id="resetBtn">Reset</button>
+                <span class="status-pill" id="statusPill">Ready</span>
             </div>
+        </header>
 
-            <div class="stats-container" id="statsContainer">
-                <!-- Stats will be populated by JavaScript -->
-            </div>
+        <main>
+            <section class="hero" id="setupSection">
+                <div class="hero-card">
+                    <h2>See your time with clarity.</h2>
+                    <p>Every square below is a week. Fill in your birth date, choose your horizon, and you’ll see how much of the canvas is already painted.</p>
+                    <blockquote>"You could leave life right now. Let that determine what you do and say and think." — Marcus Aurelius</blockquote>
+                </div>
 
-            <div class="grid-container">
-                <div class="grid-legend">
-                    <div class="legend-item">
-                        <div class="legend-square lived"></div>
-                        <span>Weeks lived</span>
-                    </div>
-                    <div class="legend-item">
-                        <div class="legend-square remaining"></div>
-                        <span>Weeks remaining</span>
+                <div class="form-card">
+                    <h3>Start your map</h3>
+                    <div class="form-grid">
+                        <div>
+                            <label for="birthDate">Birth date</label>
+                            <input type="date" id="birthDate" />
+                        </div>
+                        <div>
+                            <label for="lifeExpectancy">Life expectancy (years)</label>
+                            <input type="number" id="lifeExpectancy" min="40" max="120" step="1" value="90" />
+                        </div>
+                        <div>
+                            <label for="calendarStart">Week starts on</label>
+                            <select id="calendarStart">
+                                <option value="monday">Monday</option>
+                                <option value="sunday">Sunday</option>
+                            </select>
+                        </div>
+                        <div>
+                            <button class="primary-button" id="buildBtn" disabled>Build my timeline</button>
+                        </div>
+                        <p class="helper-text" id="validationMessage">Add your birth date to unlock the dashboard.</p>
                     </div>
                 </div>
-                
-                <div class="weeks-grid" id="weeksGrid">
-                    <!-- Grid will be populated by JavaScript -->
-                </div>
-            </div>
+            </section>
 
-            <div class="reflection-text">
-                Time is the most precious resource we have. Each filled square represents a week that has shaped who you are today. The empty squares remind us that every week ahead is an opportunity to create something meaningful.
-            </div>
-        </div>
+            <section class="dashboard" id="dashboard">
+                <div class="stats-grid" id="statsGrid" aria-live="polite"></div>
+
+                <div class="progress-panel">
+                    <h3>Life progress</h3>
+                    <div class="progress-bar" aria-label="Life progress">
+                        <span id="progressFill"></span>
+                    </div>
+                    <div class="progress-meta">
+                        <span id="progressLabel">0% complete</span>
+                        <span id="progressRemaining">0 weeks remaining</span>
+                    </div>
+                </div>
+
+                <div class="grid-panel">
+                    <div class="grid-legend">
+                        <span><span class="legend-swatch legend-lived"></span>Weeks lived</span>
+                        <span><span class="legend-swatch legend-current"></span>Current week</span>
+                        <span><span class="legend-swatch legend-remaining"></span>Weeks remaining</span>
+                    </div>
+                    <div class="weeks-grid" id="weeksGrid"></div>
+                </div>
+
+                <div class="insight-grid" id="insightGrid"></div>
+            </section>
+        </main>
+
+        <footer class="footer">
+            <span>Built to keep your perspective clear. Data stays in your browser.</span>
+            <span>© 2024 Memento Mori</span>
+        </footer>
     </div>
 
     <script>
-        // Elements
-        const step1 = document.getElementById('step1');
-        const step2 = document.getElementById('step2');
         const birthDateInput = document.getElementById('birthDate');
-        const continueBtn = document.getElementById('continueBtn');
-        const backBtn = document.getElementById('backBtn');
-        const statsContainer = document.getElementById('statsContainer');
+        const lifeExpectancyInput = document.getElementById('lifeExpectancy');
+        const calendarStartInput = document.getElementById('calendarStart');
+        const buildBtn = document.getElementById('buildBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const validationMessage = document.getElementById('validationMessage');
+        const dashboard = document.getElementById('dashboard');
+        const statsGrid = document.getElementById('statsGrid');
+        const progressFill = document.getElementById('progressFill');
+        const progressLabel = document.getElementById('progressLabel');
+        const progressRemaining = document.getElementById('progressRemaining');
         const weeksGrid = document.getElementById('weeksGrid');
+        const insightGrid = document.getElementById('insightGrid');
+        const statusPill = document.getElementById('statusPill');
 
-        // Enable continue button when date is selected
-        birthDateInput.addEventListener('change', function() {
-            continueBtn.disabled = !this.value;
-        });
+        const STORAGE_KEY = 'memento-mori-settings-v2';
+        const today = new Date();
+        const todayIso = today.toISOString().split('T')[0];
+        birthDateInput.max = todayIso;
 
-        // Continue to visualization
-        continueBtn.addEventListener('click', function() {
-            if (birthDateInput.value) {
-                generateVisualization();
-                showStep(2);
-            }
-        });
-
-        // Back to input
-        backBtn.addEventListener('click', function() {
-            showStep(1);
-        });
-
-        function showStep(stepNumber) {
-            document.querySelectorAll('.step').forEach(step => step.classList.remove('active'));
-            document.getElementById(`step${stepNumber}`).classList.add('active');
+        const savedSettings = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+        if (savedSettings.birthDate) {
+            birthDateInput.value = savedSettings.birthDate;
+        }
+        if (savedSettings.lifeExpectancy) {
+            lifeExpectancyInput.value = savedSettings.lifeExpectancy;
+        }
+        if (savedSettings.calendarStart) {
+            calendarStartInput.value = savedSettings.calendarStart;
         }
 
-        function generateVisualization() {
-            const birthDate = new Date(birthDateInput.value);
-            const today = new Date();
-            
-            // Calculate weeks lived
-            const msPerWeek = 7 * 24 * 60 * 60 * 1000;
-            const weeksLived = Math.floor((today - birthDate) / msPerWeek);
-            
-            // Assume 90 years lifespan (4680 weeks)
-            const totalWeeks = 90 * 52;
-            const weeksRemaining = Math.max(0, totalWeeks - weeksLived);
-            const lifePercentage = Math.min(100, (weeksLived / totalWeeks * 100));
-            
-            // Calculate additional stats
-            const yearsLived = (weeksLived / 52).toFixed(1);
-            const daysLived = weeksLived * 7;
-            
-            // Generate stats
-            generateStats({
-                weeksLived,
-                weeksRemaining,
-                lifePercentage,
-                yearsLived,
-                daysLived
-            });
-            
-            // Generate grid
-            generateGrid(weeksLived, totalWeeks);
+        const msPerWeek = 7 * 24 * 60 * 60 * 1000;
+
+        function updateButtonState() {
+            buildBtn.disabled = !birthDateInput.value;
         }
 
-        function generateStats(data) {
+        function setStatus(message) {
+            statusPill.textContent = message;
+        }
+
+        function calculateWeeks(startDate, endDate) {
+            return Math.floor((endDate - startDate) / msPerWeek);
+        }
+
+        function formatNumber(value) {
+            return value.toLocaleString();
+        }
+
+        function getWeekStart(date, weekStart) {
+            const newDate = new Date(date);
+            const day = newDate.getDay();
+            const offset = weekStart === 'monday' ? (day === 0 ? -6 : 1 - day) : -day;
+            newDate.setDate(newDate.getDate() + offset);
+            newDate.setHours(0, 0, 0, 0);
+            return newDate;
+        }
+
+        function buildStats(data) {
             const stats = [
-                { number: data.weeksLived.toLocaleString(), label: 'Weeks lived' },
-                { number: data.weeksRemaining.toLocaleString(), label: 'Weeks remaining' },
-                { number: `${data.lifePercentage.toFixed(1)}%`, label: 'Life lived' },
-                { number: data.yearsLived, label: 'Years on earth' }
+                { label: 'Weeks lived', value: formatNumber(data.weeksLived) },
+                { label: 'Weeks remaining', value: formatNumber(data.weeksRemaining) },
+                { label: 'Life complete', value: `${data.lifePercentage.toFixed(1)}%` },
+                { label: 'Age (years)', value: data.yearsLived.toFixed(1) },
+                { label: 'Days lived', value: formatNumber(data.daysLived) },
+                { label: 'Next milestone', value: data.nextMilestoneLabel }
             ];
 
-            statsContainer.innerHTML = stats.map(stat => `
-                <div class="stat">
-                    <div class="stat-number">${stat.number}</div>
+            statsGrid.innerHTML = stats.map(stat => `
+                <div class="stat-card">
+                    <div class="stat-value">${stat.value}</div>
                     <div class="stat-label">${stat.label}</div>
                 </div>
             `).join('');
         }
 
-        function generateGrid(weeksLived, totalWeeks) {
-            weeksGrid.innerHTML = '';
-            
-            for (let i = 0; i < totalWeeks; i++) {
-                const square = document.createElement('div');
-                square.className = 'week-square';
-                if (i < weeksLived) {
-                    square.classList.add('lived');
+        function buildInsights(data) {
+            const insights = [
+                {
+                    title: 'Focus window',
+                    body: `You have ${formatNumber(data.weeksRemaining)} weeks to invest intentionally. Planning just one meaningful action per week adds up fast.`
+                },
+                {
+                    title: 'Current chapter',
+                    body: `Week ${formatNumber(data.currentWeekOfLife)} of ${formatNumber(data.totalWeeks)}. This is year ${data.currentYearOfLife} of your timeline.`
+                },
+                {
+                    title: 'Next milestone',
+                    body: data.nextMilestoneText
                 }
-                weeksGrid.appendChild(square);
-            }
+            ];
+
+            insightGrid.innerHTML = insights.map(insight => `
+                <div class="insight-card">
+                    <h4>${insight.title}</h4>
+                    <p>${insight.body}</p>
+                </div>
+            `).join('');
         }
 
-        // Set max date to today and configure for Norwegian locale
-        const today = new Date().toISOString().split('T')[0];
-        birthDateInput.max = today;
-        
-        // Set locale for Norwegian date formatting
-        birthDateInput.addEventListener('focus', function() {
-            this.setAttribute('data-placeholder', 'dd.mm.yyyy');
+        function buildGrid(weeksLived, totalWeeks, currentWeekIndex) {
+            weeksGrid.innerHTML = '';
+            const fragment = document.createDocumentFragment();
+
+            for (let i = 0; i < totalWeeks; i++) {
+                const cell = document.createElement('div');
+                cell.classList.add('week');
+                if (i < weeksLived) {
+                    cell.classList.add('lived');
+                }
+                if (i === currentWeekIndex) {
+                    cell.classList.add('current');
+                }
+                fragment.appendChild(cell);
+            }
+            weeksGrid.appendChild(fragment);
+        }
+
+        function renderDashboard() {
+            const birthDateValue = birthDateInput.value;
+            const rawLifeExpectancy = Number(lifeExpectancyInput.value);
+            const weekStart = calendarStartInput.value;
+
+            if (!birthDateValue) {
+                validationMessage.textContent = 'Add your birth date to unlock the dashboard.';
+                dashboard.classList.remove('active');
+                return;
+            }
+
+            if (!Number.isFinite(rawLifeExpectancy)) {
+                validationMessage.textContent = 'Enter a valid life expectancy to continue.';
+                dashboard.classList.remove('active');
+                return;
+            }
+
+            const lifeExpectancy = Math.min(120, Math.max(40, Math.round(rawLifeExpectancy)));
+            if (lifeExpectancy !== rawLifeExpectancy) {
+                lifeExpectancyInput.value = lifeExpectancy;
+            }
+
+            const birthDate = new Date(birthDateValue);
+            if (birthDate > today) {
+                validationMessage.textContent = 'Birth date cannot be in the future.';
+                dashboard.classList.remove('active');
+                return;
+            }
+
+            const totalWeeks = lifeExpectancy * 52;
+            const weeksLived = Math.max(0, calculateWeeks(birthDate, today));
+            const weeksRemaining = Math.max(0, totalWeeks - weeksLived);
+            const lifePercentage = totalWeeks > 0 ? Math.min(100, (weeksLived / totalWeeks) * 100) : 0;
+            const yearsLived = weeksLived / 52;
+            const daysLived = weeksLived * 7;
+
+            const birthStart = getWeekStart(birthDate, weekStart);
+            const currentWeekIndex = calculateWeeks(birthStart, getWeekStart(today, weekStart));
+            const currentWeekOfLife = Math.min(totalWeeks, currentWeekIndex + 1);
+            const currentYearOfLife = Math.min(lifeExpectancy, Math.ceil(currentWeekOfLife / 52));
+
+            const nextMilestoneYear = Math.min(lifeExpectancy, Math.ceil((currentYearOfLife + 1) / 5) * 5);
+            const nextMilestoneWeeks = Math.max(0, nextMilestoneYear * 52 - weeksLived);
+            const nextMilestoneLabel = nextMilestoneYear === currentYearOfLife
+                ? `Year ${currentYearOfLife}`
+                : `Year ${nextMilestoneYear}`;
+            const nextMilestoneText = nextMilestoneWeeks === 0
+                ? `You’re in your ${nextMilestoneYear}th year. Celebrate the progress and set the next intention.`
+                : `${formatNumber(nextMilestoneWeeks)} weeks until year ${nextMilestoneYear}. Consider what you want that milestone to mean.`;
+
+            buildStats({
+                weeksLived,
+                weeksRemaining,
+                lifePercentage,
+                yearsLived,
+                daysLived,
+                nextMilestoneLabel
+            });
+
+            progressFill.style.width = `${lifePercentage}%`;
+            progressLabel.textContent = `${lifePercentage.toFixed(1)}% complete`;
+            progressRemaining.textContent = `${formatNumber(weeksRemaining)} weeks remaining`;
+
+            buildGrid(weeksLived, totalWeeks, Math.min(currentWeekIndex, totalWeeks - 1));
+
+            buildInsights({
+                weeksRemaining,
+                currentWeekOfLife,
+                totalWeeks,
+                currentYearOfLife,
+                nextMilestoneText
+            });
+
+            dashboard.classList.add('active');
+            validationMessage.textContent = 'Dashboard updated. Your data is stored locally.';
+            setStatus('Updated');
+
+            localStorage.setItem(STORAGE_KEY, JSON.stringify({
+                birthDate: birthDateValue,
+                lifeExpectancy,
+                calendarStart: weekStart
+            }));
+        }
+
+        birthDateInput.addEventListener('input', () => {
+            updateButtonState();
+            validationMessage.textContent = birthDateInput.value ? 'Ready when you are.' : 'Add your birth date to unlock the dashboard.';
         });
+
+        buildBtn.addEventListener('click', renderDashboard);
+        lifeExpectancyInput.addEventListener('change', renderDashboard);
+        calendarStartInput.addEventListener('change', renderDashboard);
+
+        resetBtn.addEventListener('click', () => {
+            localStorage.removeItem(STORAGE_KEY);
+            birthDateInput.value = '';
+            lifeExpectancyInput.value = 90;
+            calendarStartInput.value = 'monday';
+            dashboard.classList.remove('active');
+            validationMessage.textContent = 'Add your birth date to unlock the dashboard.';
+            setStatus('Ready');
+            updateButtonState();
+        });
+
+        updateButtonState();
+        if (birthDateInput.value) {
+            renderDashboard();
+        }
     </script>
 </body>
 </html>
