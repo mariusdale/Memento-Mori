@@ -308,33 +308,76 @@
             background: var(--success);
         }
 
+        .weeks-container {
+            --cell-size: 6px;
+            --cell-gap: 1.5px;
+            --cell-total: calc(var(--cell-size) + var(--cell-gap));
+            display: flex;
+            gap: 0;
+        }
+
+        .year-labels {
+            display: flex;
+            flex-direction: column;
+            gap: var(--cell-gap);
+            flex-shrink: 0;
+            user-select: none;
+        }
+
+        .year-label {
+            height: var(--cell-size);
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 6px;
+            font-size: 0.6rem;
+            color: var(--muted);
+            line-height: 1;
+        }
+
+        .year-label.dim { color: transparent; }
+
+        .weeks-grid-wrapper {
+            overflow: hidden;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .week-col-headers {
+            display: grid;
+            grid-template-columns: repeat(52, var(--cell-size));
+            gap: var(--cell-gap);
+            margin-bottom: 2px;
+        }
+
+        .week-col-header {
+            font-size: 0.55rem;
+            color: var(--muted);
+            text-align: center;
+            line-height: 1;
+        }
+
         .weeks-grid {
             display: grid;
-            grid-template-columns: repeat(52, minmax(8px, 1fr));
-            gap: 3px;
+            grid-template-columns: repeat(52, var(--cell-size));
+            grid-auto-rows: var(--cell-size);
+            gap: var(--cell-gap);
         }
 
         .week {
-            aspect-ratio: 1;
+            width: var(--cell-size);
+            height: var(--cell-size);
             background: #1a2030;
-            border-radius: 3px;
-            border: 1px solid #1f2635;
-            transition: transform 0.2s ease;
+            border-radius: 1.5px;
         }
 
         .week.lived {
             background: var(--accent);
-            border-color: rgba(231, 181, 109, 0.8);
         }
 
         .week.current {
             background: var(--success);
-            border-color: rgba(123, 211, 137, 0.8);
-        }
-
-        .week:hover {
-            transform: scale(1.4);
-            z-index: 2;
+            box-shadow: 0 0 3px rgba(123, 211, 137, 0.6);
         }
 
         .insight-grid {
@@ -392,23 +435,24 @@
                 flex-direction: column;
                 align-items: flex-start;
             }
-
-            .weeks-grid {
-                grid-template-columns: repeat(26, minmax(8px, 1fr));
-            }
         }
 
         @media (max-width: 600px) {
-            .weeks-grid {
-                grid-template-columns: repeat(20, minmax(8px, 1fr));
-            }
-
             .hero-card,
             .form-card,
             .progress-panel,
             .grid-panel {
                 padding: 1.4rem;
             }
+
+            .weeks-container {
+                --cell-size: 4px;
+                --cell-gap: 1px;
+            }
+
+            .year-label { font-size: 0.5rem; padding-right: 4px; }
+            .week-col-headers { display: none; }
+            .year-labels { padding-top: 0; }
         }
     </style>
 </head>
@@ -479,7 +523,12 @@
                         <span><span class="legend-swatch legend-current"></span>Current week</span>
                         <span><span class="legend-swatch legend-remaining"></span>Weeks remaining</span>
                     </div>
-                    <div class="weeks-grid" id="weeksGrid"></div>
+                    <div class="weeks-container">
+                        <div class="year-labels" id="yearLabels"></div>
+                        <div class="weeks-grid-wrapper">
+                            <div class="weeks-grid" id="weeksGrid"></div>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="insight-grid" id="insightGrid"></div>
@@ -593,10 +642,26 @@
             `).join('');
         }
 
-        function buildGrid(weeksLived, totalWeeks, currentWeekIndex) {
+        function buildGrid(weeksLived, totalWeeks, currentWeekIndex, lifeExpectancy) {
             weeksGrid.innerHTML = '';
-            const fragment = document.createDocumentFragment();
+            const yearLabels = document.getElementById('yearLabels');
+            yearLabels.innerHTML = '';
 
+            // Year labels on the left — show every 5th year, dim the rest
+            for (let y = 0; y < lifeExpectancy; y++) {
+                const label = document.createElement('div');
+                label.classList.add('year-label');
+                if (y % 5 === 0) {
+                    label.textContent = y;
+                } else {
+                    label.classList.add('dim');
+                    label.textContent = '.';
+                }
+                yearLabels.appendChild(label);
+            }
+
+            // Week cells
+            const fragment = document.createDocumentFragment();
             for (let i = 0; i < totalWeeks; i++) {
                 const cell = document.createElement('div');
                 cell.classList.add('week');
@@ -606,6 +671,7 @@
                 if (i === currentWeekIndex) {
                     cell.classList.add('current');
                 }
+                cell.title = `Year ${Math.floor(i / 52)}, Week ${(i % 52) + 1}`;
                 fragment.appendChild(cell);
             }
             weeksGrid.appendChild(fragment);
@@ -674,7 +740,7 @@
             progressLabel.textContent = `${lifePercentage.toFixed(1)}% complete`;
             progressRemaining.textContent = `${formatNumber(weeksRemaining)} weeks remaining`;
 
-            buildGrid(weeksLived, totalWeeks, Math.min(currentWeekIndex, totalWeeks - 1));
+            buildGrid(weeksLived, totalWeeks, Math.min(currentWeekIndex, totalWeeks - 1), lifeExpectancy);
 
             buildInsights({
                 weeksRemaining,
