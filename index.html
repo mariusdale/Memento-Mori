@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memento Mori | Life in Weeks</title>
+    <style>
+        :root {
+            color-scheme: light;
+            --bg: #0f1115;
+            --surface: #151923;
+            --card: #1c2230;
+            --muted: #8a94a6;
+            --text: #f6f7fb;
+            --accent: #e7b56d;
+            --accent-strong: #f4c77d;
+            --border: #2a3140;
+            --success: #7bd389;
+            --shadow: 0 12px 35px rgba(7, 9, 14, 0.35);
+            --radius-lg: 24px;
+            --radius-md: 16px;
+            --radius-sm: 12px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Inter", "SF Pro Text", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background: radial-gradient(circle at top, #1b2030 0%, #0f1115 55%);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        .page {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            padding: 2.5rem clamp(1.5rem, 4vw, 4rem) 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+
+        .brand {
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
+        }
+
+        .brand h1 {
+            font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+        }
+
+        .brand p {
+            color: var(--muted);
+            max-width: 460px;
+            font-size: 0.98rem;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .ghost-button {
+            border: 1px solid var(--border);
+            background: transparent;
+            color: var(--text);
+            padding: 0.7rem 1.2rem;
+            border-radius: 999px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: border-color 0.2s ease, color 0.2s ease;
+        }
+
+        .ghost-button:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        main {
+            flex: 1;
+            padding: 0 clamp(1.5rem, 4vw, 4rem) 4rem;
+            display: flex;
+            flex-direction: column;
+            gap: 2.5rem;
+        }
+
+        .hero {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .hero-card {
+            background: linear-gradient(135deg, rgba(231, 181, 109, 0.15), rgba(231, 181, 109, 0.05));
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(231, 181, 109, 0.2);
+        }
+
+        .hero-card h2 {
+            font-size: 1.6rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .hero-card p {
+            color: var(--muted);
+            line-height: 1.6;
+        }
+
+        .hero-card blockquote {
+            margin-top: 1.5rem;
+            font-style: italic;
+            color: var(--accent-strong);
+        }
+
+        .form-card {
+            background: var(--surface);
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+        }
+
+        .form-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+        }
+
+        .form-grid {
+            display: grid;
+            gap: 1.25rem;
+        }
+
+        label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--muted);
+            margin-bottom: 0.4rem;
+            display: block;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 0.85rem 1rem;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border);
+            background: #0f131c;
+            color: var(--text);
+            font-size: 0.95rem;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(231, 181, 109, 0.2);
+        }
+
+        .primary-button {
+            background: var(--accent);
+            color: #1c160b;
+            font-weight: 600;
+            border: none;
+            padding: 0.9rem 1.4rem;
+            border-radius: 999px;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .primary-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .primary-button:hover:not(:disabled) {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 25px rgba(231, 181, 109, 0.3);
+        }
+
+        .helper-text {
+            color: var(--muted);
+            font-size: 0.85rem;
+        }
+
+        .dashboard {
+            display: none;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .dashboard.active {
+            display: flex;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+        }
+
+        .stat-card {
+            background: var(--card);
+            padding: 1.4rem;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+        }
+
+        .stat-value {
+            font-size: 1.6rem;
+            font-weight: 600;
+            margin-bottom: 0.35rem;
+        }
+
+        .stat-label {
+            color: var(--muted);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .progress-panel {
+            background: var(--surface);
+            padding: 1.8rem;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+        }
+
+        .progress-bar {
+            position: relative;
+            height: 12px;
+            background: #0c0f16;
+            border-radius: 999px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        .progress-bar span {
+            display: block;
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), var(--accent-strong));
+            width: 0;
+            transition: width 0.4s ease;
+        }
+
+        .progress-meta {
+            margin-top: 0.8rem;
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            color: var(--muted);
+        }
+
+        .grid-panel {
+            background: var(--surface);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+        }
+
+        .grid-legend {
+            display: flex;
+            gap: 1.2rem;
+            flex-wrap: wrap;
+            font-size: 0.8rem;
+            color: var(--muted);
+            margin-bottom: 1rem;
+        }
+
+        .legend-swatch {
+            width: 12px;
+            height: 12px;
+            border-radius: 4px;
+            display: inline-block;
+            margin-right: 0.4rem;
+        }
+
+        .legend-lived {
+            background: var(--accent);
+        }
+
+        .legend-remaining {
+            background: #1a2030;
+            border: 1px solid var(--border);
+        }
+
+        .legend-current {
+            background: var(--success);
+        }
+
+        .weeks-container {
+            --cell-size: 6px;
+            --cell-gap: 1.5px;
+            --cell-total: calc(var(--cell-size) + var(--cell-gap));
+            display: flex;
+            gap: 0;
+        }
+
+        .year-labels {
+            display: flex;
+            flex-direction: column;
+            gap: var(--cell-gap);
+            flex-shrink: 0;
+            user-select: none;
+        }
+
+        .year-label {
+            height: var(--cell-size);
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 6px;
+            font-size: 0.6rem;
+            color: var(--muted);
+            line-height: 1;
+        }
+
+        .year-label.dim { color: transparent; }
+
+        .weeks-grid-wrapper {
+            overflow: hidden;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .week-col-headers {
+            display: grid;
+            grid-template-columns: repeat(52, var(--cell-size));
+            gap: var(--cell-gap);
+            margin-bottom: 2px;
+        }
+
+        .week-col-header {
+            font-size: 0.55rem;
+            color: var(--muted);
+            text-align: center;
+            line-height: 1;
+        }
+
+        .weeks-grid {
+            display: grid;
+            grid-template-columns: repeat(52, var(--cell-size));
+            grid-auto-rows: var(--cell-size);
+            gap: var(--cell-gap);
+        }
+
+        .week {
+            width: var(--cell-size);
+            height: var(--cell-size);
+            background: #1a2030;
+            border-radius: 1.5px;
+        }
+
+        .week.lived {
+            background: var(--accent);
+        }
+
+        .week.current {
+            background: var(--success);
+            box-shadow: 0 0 3px rgba(123, 211, 137, 0.6);
+        }
+
+        .insight-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+            gap: 1rem;
+        }
+
+        .insight-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            padding: 1.4rem;
+            border-radius: var(--radius-md);
+        }
+
+        .insight-card h4 {
+            font-size: 1.05rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .insight-card p {
+            color: var(--muted);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .footer {
+            padding: 2rem clamp(1.5rem, 4vw, 4rem) 3rem;
+            color: var(--muted);
+            font-size: 0.85rem;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.4rem 0.8rem;
+            border-radius: 999px;
+            background: rgba(123, 211, 137, 0.15);
+            color: var(--success);
+            font-size: 0.75rem;
+            border: 1px solid rgba(123, 211, 137, 0.3);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 900px) {
+            header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .hero-card,
+            .form-card,
+            .progress-panel,
+            .grid-panel {
+                padding: 1.4rem;
+            }
+
+            .weeks-container {
+                --cell-size: 4px;
+                --cell-gap: 1px;
+            }
+
+            .year-label { font-size: 0.5rem; padding-right: 4px; }
+            .week-col-headers { display: none; }
+            .year-labels { padding-top: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <header>
+            <div class="brand">
+                <h1>Memento Mori</h1>
+                <p>A modern reflection tool to map your life in weeks, capture milestones, and keep your focus sharp.</p>
+            </div>
+            <div class="header-actions">
+                <button class="ghost-button" id="resetBtn">Reset</button>
+                <span class="status-pill" id="statusPill">Ready</span>
+            </div>
+        </header>
+
+        <main>
+            <section class="hero" id="setupSection">
+                <div class="hero-card">
+                    <h2>See your time with clarity.</h2>
+                    <p>Every square below is a week. Fill in your birth date, choose your horizon, and you’ll see how much of the canvas is already painted.</p>
+                    <blockquote>"You could leave life right now. Let that determine what you do and say and think." — Marcus Aurelius</blockquote>
+                </div>
+
+                <div class="form-card">
+                    <h3>Start your map</h3>
+                    <div class="form-grid">
+                        <div>
+                            <label for="birthDate">Birth date</label>
+                            <input type="date" id="birthDate" />
+                        </div>
+                        <div>
+                            <label for="lifeExpectancy">Life expectancy (years)</label>
+                            <input type="number" id="lifeExpectancy" min="40" max="120" step="1" value="90" />
+                        </div>
+                        <div>
+                            <label for="calendarStart">Week starts on</label>
+                            <select id="calendarStart">
+                                <option value="monday">Monday</option>
+                                <option value="sunday">Sunday</option>
+                            </select>
+                        </div>
+                        <div>
+                            <button class="primary-button" id="buildBtn" disabled>Build my timeline</button>
+                        </div>
+                        <p class="helper-text" id="validationMessage">Add your birth date to unlock the dashboard.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="dashboard" id="dashboard">
+                <div class="stats-grid" id="statsGrid" aria-live="polite"></div>
+
+                <div class="progress-panel">
+                    <h3>Life progress</h3>
+                    <div class="progress-bar" aria-label="Life progress">
+                        <span id="progressFill"></span>
+                    </div>
+                    <div class="progress-meta">
+                        <span id="progressLabel">0% complete</span>
+                        <span id="progressRemaining">0 weeks remaining</span>
+                    </div>
+                </div>
+
+                <div class="grid-panel">
+                    <div class="grid-legend">
+                        <span><span class="legend-swatch legend-lived"></span>Weeks lived</span>
+                        <span><span class="legend-swatch legend-current"></span>Current week</span>
+                        <span><span class="legend-swatch legend-remaining"></span>Weeks remaining</span>
+                    </div>
+                    <div class="weeks-container">
+                        <div class="year-labels" id="yearLabels"></div>
+                        <div class="weeks-grid-wrapper">
+                            <div class="weeks-grid" id="weeksGrid"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="insight-grid" id="insightGrid"></div>
+            </section>
+        </main>
+
+        <footer class="footer">
+            <span>Built to keep your perspective clear. Data stays in your browser.</span>
+            <span>© 2024 Memento Mori</span>
+        </footer>
+    </div>
+
+    <script>
+        const birthDateInput = document.getElementById('birthDate');
+        const lifeExpectancyInput = document.getElementById('lifeExpectancy');
+        const calendarStartInput = document.getElementById('calendarStart');
+        const buildBtn = document.getElementById('buildBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const validationMessage = document.getElementById('validationMessage');
+        const dashboard = document.getElementById('dashboard');
+        const statsGrid = document.getElementById('statsGrid');
+        const progressFill = document.getElementById('progressFill');
+        const progressLabel = document.getElementById('progressLabel');
+        const progressRemaining = document.getElementById('progressRemaining');
+        const weeksGrid = document.getElementById('weeksGrid');
+        const insightGrid = document.getElementById('insightGrid');
+        const statusPill = document.getElementById('statusPill');
+
+        const STORAGE_KEY = 'memento-mori-settings-v2';
+        const today = new Date();
+        const todayIso = today.toISOString().split('T')[0];
+        birthDateInput.max = todayIso;
+
+        const savedSettings = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+        if (savedSettings.birthDate) {
+            birthDateInput.value = savedSettings.birthDate;
+        }
+        if (savedSettings.lifeExpectancy) {
+            lifeExpectancyInput.value = savedSettings.lifeExpectancy;
+        }
+        if (savedSettings.calendarStart) {
+            calendarStartInput.value = savedSettings.calendarStart;
+        }
+
+        const msPerWeek = 7 * 24 * 60 * 60 * 1000;
+
+        function updateButtonState() {
+            buildBtn.disabled = !birthDateInput.value;
+        }
+
+        function setStatus(message) {
+            statusPill.textContent = message;
+        }
+
+        function calculateWeeks(startDate, endDate) {
+            return Math.floor((endDate - startDate) / msPerWeek);
+        }
+
+        function formatNumber(value) {
+            return value.toLocaleString();
+        }
+
+        function getWeekStart(date, weekStart) {
+            const newDate = new Date(date);
+            const day = newDate.getDay();
+            const offset = weekStart === 'monday' ? (day === 0 ? -6 : 1 - day) : -day;
+            newDate.setDate(newDate.getDate() + offset);
+            newDate.setHours(0, 0, 0, 0);
+            return newDate;
+        }
+
+        function buildStats(data) {
+            const stats = [
+                { label: 'Weeks lived', value: formatNumber(data.weeksLived) },
+                { label: 'Weeks remaining', value: formatNumber(data.weeksRemaining) },
+                { label: 'Life complete', value: `${data.lifePercentage.toFixed(1)}%` },
+                { label: 'Age (years)', value: data.yearsLived.toFixed(1) },
+                { label: 'Days lived', value: formatNumber(data.daysLived) },
+                { label: 'Next milestone', value: data.nextMilestoneLabel }
+            ];
+
+            statsGrid.innerHTML = stats.map(stat => `
+                <div class="stat-card">
+                    <div class="stat-value">${stat.value}</div>
+                    <div class="stat-label">${stat.label}</div>
+                </div>
+            `).join('');
+        }
+
+        function buildInsights(data) {
+            const insights = [
+                {
+                    title: 'Focus window',
+                    body: `You have ${formatNumber(data.weeksRemaining)} weeks to invest intentionally. Planning just one meaningful action per week adds up fast.`
+                },
+                {
+                    title: 'Current chapter',
+                    body: `Week ${formatNumber(data.currentWeekOfLife)} of ${formatNumber(data.totalWeeks)}. This is year ${data.currentYearOfLife} of your timeline.`
+                },
+                {
+                    title: 'Next milestone',
+                    body: data.nextMilestoneText
+                }
+            ];
+
+            insightGrid.innerHTML = insights.map(insight => `
+                <div class="insight-card">
+                    <h4>${insight.title}</h4>
+                    <p>${insight.body}</p>
+                </div>
+            `).join('');
+        }
+
+        function buildGrid(weeksLived, totalWeeks, currentWeekIndex, lifeExpectancy) {
+            weeksGrid.innerHTML = '';
+            const yearLabels = document.getElementById('yearLabels');
+            yearLabels.innerHTML = '';
+
+            // Year labels on the left — show every 5th year, dim the rest
+            for (let y = 0; y < lifeExpectancy; y++) {
+                const label = document.createElement('div');
+                label.classList.add('year-label');
+                if (y % 5 === 0) {
+                    label.textContent = y;
+                } else {
+                    label.classList.add('dim');
+                    label.textContent = '.';
+                }
+                yearLabels.appendChild(label);
+            }
+
+            // Week cells
+            const fragment = document.createDocumentFragment();
+            for (let i = 0; i < totalWeeks; i++) {
+                const cell = document.createElement('div');
+                cell.classList.add('week');
+                if (i < weeksLived) {
+                    cell.classList.add('lived');
+                }
+                if (i === currentWeekIndex) {
+                    cell.classList.add('current');
+                }
+                cell.title = `Year ${Math.floor(i / 52)}, Week ${(i % 52) + 1}`;
+                fragment.appendChild(cell);
+            }
+            weeksGrid.appendChild(fragment);
+        }
+
+        function renderDashboard() {
+            const birthDateValue = birthDateInput.value;
+            const rawLifeExpectancy = Number(lifeExpectancyInput.value);
+            const weekStart = calendarStartInput.value;
+
+            if (!birthDateValue) {
+                validationMessage.textContent = 'Add your birth date to unlock the dashboard.';
+                dashboard.classList.remove('active');
+                return;
+            }
+
+            if (!Number.isFinite(rawLifeExpectancy)) {
+                validationMessage.textContent = 'Enter a valid life expectancy to continue.';
+                dashboard.classList.remove('active');
+                return;
+            }
+
+            const lifeExpectancy = Math.min(120, Math.max(40, Math.round(rawLifeExpectancy)));
+            if (lifeExpectancy !== rawLifeExpectancy) {
+                lifeExpectancyInput.value = lifeExpectancy;
+            }
+
+            const birthDate = new Date(birthDateValue);
+            if (birthDate > today) {
+                validationMessage.textContent = 'Birth date cannot be in the future.';
+                dashboard.classList.remove('active');
+                return;
+            }
+
+            const totalWeeks = lifeExpectancy * 52;
+            const weeksLived = Math.max(0, calculateWeeks(birthDate, today));
+            const weeksRemaining = Math.max(0, totalWeeks - weeksLived);
+            const lifePercentage = totalWeeks > 0 ? Math.min(100, (weeksLived / totalWeeks) * 100) : 0;
+            const yearsLived = weeksLived / 52;
+            const daysLived = weeksLived * 7;
+
+            const birthStart = getWeekStart(birthDate, weekStart);
+            const currentWeekIndex = calculateWeeks(birthStart, getWeekStart(today, weekStart));
+            const currentWeekOfLife = Math.min(totalWeeks, currentWeekIndex + 1);
+            const currentYearOfLife = Math.min(lifeExpectancy, Math.ceil(currentWeekOfLife / 52));
+
+            const nextMilestoneYear = Math.min(lifeExpectancy, Math.ceil((currentYearOfLife + 1) / 5) * 5);
+            const nextMilestoneWeeks = Math.max(0, nextMilestoneYear * 52 - weeksLived);
+            const nextMilestoneLabel = nextMilestoneYear === currentYearOfLife
+                ? `Year ${currentYearOfLife}`
+                : `Year ${nextMilestoneYear}`;
+            const nextMilestoneText = nextMilestoneWeeks === 0
+                ? `You’re in your ${nextMilestoneYear}th year. Celebrate the progress and set the next intention.`
+                : `${formatNumber(nextMilestoneWeeks)} weeks until year ${nextMilestoneYear}. Consider what you want that milestone to mean.`;
+
+            buildStats({
+                weeksLived,
+                weeksRemaining,
+                lifePercentage,
+                yearsLived,
+                daysLived,
+                nextMilestoneLabel
+            });
+
+            progressFill.style.width = `${lifePercentage}%`;
+            progressLabel.textContent = `${lifePercentage.toFixed(1)}% complete`;
+            progressRemaining.textContent = `${formatNumber(weeksRemaining)} weeks remaining`;
+
+            buildGrid(weeksLived, totalWeeks, Math.min(currentWeekIndex, totalWeeks - 1), lifeExpectancy);
+
+            buildInsights({
+                weeksRemaining,
+                currentWeekOfLife,
+                totalWeeks,
+                currentYearOfLife,
+                nextMilestoneText
+            });
+
+            dashboard.classList.add('active');
+            validationMessage.textContent = 'Dashboard updated. Your data is stored locally.';
+            setStatus('Updated');
+
+            localStorage.setItem(STORAGE_KEY, JSON.stringify({
+                birthDate: birthDateValue,
+                lifeExpectancy,
+                calendarStart: weekStart
+            }));
+        }
+
+        birthDateInput.addEventListener('input', () => {
+            updateButtonState();
+            validationMessage.textContent = birthDateInput.value ? 'Ready when you are.' : 'Add your birth date to unlock the dashboard.';
+        });
+
+        buildBtn.addEventListener('click', renderDashboard);
+        lifeExpectancyInput.addEventListener('change', renderDashboard);
+        calendarStartInput.addEventListener('change', renderDashboard);
+
+        resetBtn.addEventListener('click', () => {
+            localStorage.removeItem(STORAGE_KEY);
+            birthDateInput.value = '';
+            lifeExpectancyInput.value = 90;
+            calendarStartInput.value = 'monday';
+            dashboard.classList.remove('active');
+            validationMessage.textContent = 'Add your birth date to unlock the dashboard.';
+            setStatus('Ready');
+            updateButtonState();
+        });
+
+        updateButtonState();
+        if (birthDateInput.value) {
+            renderDashboard();
+        }
+    </script>
+</body>
+</html>
